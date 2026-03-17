@@ -1,0 +1,9 @@
+faiss-cpu
+google-genai
+pypdf
+python-docx
+markdown
+beautifulsoup4
+numpy
+nltk
+python-dotenv

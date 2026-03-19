@@ -7,3 +7,5 @@ beautifulsoup4
 numpy
 nltk
 python-dotenv
+sentence-transformers
+ollama

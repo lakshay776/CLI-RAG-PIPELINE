@@ -25,7 +25,7 @@ class VectorStore:
             if idx == -1:
                 continue
 
-            distance = distances[0][i]
+            distance = float(distances[0][i])
             if distance > 1e10:
                 continue
             similarity = distance # For IndexFlatIP, distance is the inner product (similarity)

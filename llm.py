@@ -14,7 +14,6 @@ def generate_response(prompt):
     result=""
     for chunk in response:
         token=chunk["message"]["content"]
-        print(token, end="", flush=True)
         result+=token
     return result
 

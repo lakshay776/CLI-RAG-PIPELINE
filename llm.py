@@ -1,6 +1,6 @@
 import ollama
 
-def generate_response(prompt):
+def generate_response(prompt: str) -> str:
     response =ollama.chat(
         model="phi3:mini",
         messages=[

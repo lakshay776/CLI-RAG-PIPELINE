@@ -26,7 +26,7 @@ Return ONLY the numbers of the best chunks in order (example: 2,5,1)
     response = generate_response(prompt)
 
     try:
-        indices = [int(i.strip())-1 for i in response.text.split(",")]
+        indices = [int(i.strip())-1 for i in response.split(",")]
     except:
         return chunks[:top_n]  # fallback
 

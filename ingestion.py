@@ -3,6 +3,7 @@ from chunker import chunk_text
 from embeddings import get_embedding
 from vector_store import VectorStore
 import os
+import numpy as np
 
 docs = load_documents("documents")
 chunks = []
@@ -15,7 +16,7 @@ for doc in docs:
 embeddings = []
 
 for chunk in chunks:
-    emb = get_embedding(chunk["text"])
+    emb =  np.array(get_embedding(chunk["text"])).astype("float32")
     embeddings.append(emb)
 
 if not embeddings:

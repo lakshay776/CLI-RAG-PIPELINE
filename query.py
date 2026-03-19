@@ -1,7 +1,6 @@
 from vector_store import VectorStore
 from embeddings import get_embedding
-from config import client, llm_model_name
-
+from llm import generate_response
 store = VectorStore(768)
 store.load("db/index.faiss")
 
@@ -18,11 +17,11 @@ while True:
 
     Question:
     {question}
+
+    the answer should be in just 50 words
+
     """
 
-    response = client.models.generate_content(
-        model=llm_model_name,
-        contents=prompt
-    )
-    print("\nAnswer:\n", response.text)
+    response = generate_response(prompt)
+    print("\nAnswer:\n", response)
     print("\nSources:", ", ".join(sources))

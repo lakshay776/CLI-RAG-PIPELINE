@@ -38,7 +38,7 @@ User Query:
     if not queries or len(queries) < 1:
         return [question]
 
-    return [queries[i] for i in range(min(len(queries), 3))]
+    return queries[:3]
 
 
 if __name__ == "__main__":

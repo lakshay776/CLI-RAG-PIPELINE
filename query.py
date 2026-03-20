@@ -3,11 +3,12 @@ from embeddings import get_embedding
 from llm import generate_response
 from reranker import rerank_chunks
 from query_expander import expand_query
+from keyword_search import KeywordSearch
 
 # Initialize store
 store = VectorStore(384)
 store.load("db")
-
+keyword_search = KeywordSearch(store.data)
 
 while True:
 
@@ -50,7 +51,9 @@ while True:
     for q in clean_queries:
         emb = get_embedding(q)
         results = store.search(emb, k=8, threshold=0.15)
+        keyword_results= keyword_search.search(q,k=5)
         all_chunks.extend(results)
+        all_chunks.extend(keyword_results)
 
     # Deduplicate (text + source)
     unique_chunks = {

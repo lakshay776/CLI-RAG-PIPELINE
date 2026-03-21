@@ -4,6 +4,7 @@ from llm import generate_response
 from reranker import rerank_chunks
 from query_expander import expand_query
 from keyword_search import KeywordSearch
+from rrf import reciprocal_rank_fusion
 
 # Initialize store
 store = VectorStore(384)
@@ -43,24 +44,29 @@ while True:
     for q in clean_queries:
         print("-", q)
 
+
+
+    print("\nExpanded Queries Raw:", expanded_queries)
+
     # ---------------------------
     # 🔥 Step 3: Retrieve Chunks
     # ---------------------------
-    all_chunks = []
+    all_results = []
 
     for q in clean_queries:
+
         emb = get_embedding(q)
-        results = store.search(emb, k=8, threshold=0.15)
-        keyword_results= keyword_search.search(q,k=5)
-        all_chunks.extend(results)
-        all_chunks.extend(keyword_results)
 
-    # Deduplicate (text + source)
-    unique_chunks = {
-        (c["text"], c["source"]): c for c in all_chunks
-    }.values()
+        vector_results = store.search(emb, k=8, threshold=0.15)
+        keyword_results = keyword_search.search(q, k=5)
 
-    context_chunks = list(unique_chunks)
+        # 🔥 IMPORTANT: keep lists separate
+        all_results.append(vector_results)
+        all_results.append(keyword_results)
+
+    # 🔥 Apply RRF correctly
+    context_chunks = reciprocal_rank_fusion(all_results)[:10]
+
 
     if not context_chunks:
         print("\nNo relevant context found.")
@@ -104,7 +110,8 @@ Rules:
 Context:
 {context}
 
-Question:
+ use all these questions to give one single collective answer
+Question: 
 {question}
 """
 
@@ -122,7 +129,7 @@ Question:
 
     avg_score = sum(c["score"] for c in reranked_chunks) / len(reranked_chunks)
 
-    if avg_score < 0.25:
+    if avg_score < 0.01:
         print("\n⚠️ Low confidence retrieval. Skipping answer.")
         continue
 
